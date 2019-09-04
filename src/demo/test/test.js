@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Button } from 'antd-mobile'
 import { push } from 'connected-react-router'
 import { testEvent } from '../../redux/actions'
 import { allComments } from '../../services'
@@ -25,7 +26,7 @@ class test extends Component {
             <div>
                 <input type='text' value={this.state.content} onChange={change.bind(this)}/>
                 <p>state的双向绑定：{this.state.content}</p> 
-                <input type="button" value='点击测试(redux)' onClick={()=>{this.props.testClk(this.state.content)}}/>
+                <Button type='primary' onClick={()=>{this.props.testClk(this.state.content)}}>点击测试(redux)</Button>
                 <p>reducer全局存储：{this.props.hh}</p> 
                 <input type="button" value='跳转' onClick={()=>{this.props.move()}}/>
             </div>
