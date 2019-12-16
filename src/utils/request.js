@@ -1,103 +1,53 @@
-import { fetch } from 'whatwg-fetch'
-
-
-const codeMessage = {
-    200: '服务器成功返回请求的数据。',
-    201: '新建或修改数据成功。',
-    202: '一个请求已经进入后台排队（异步任务）。',
-    204: '删除数据成功。',
-    400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-    401: '用户没有权限（令牌、用户名、密码错误）。',
-    403: '用户得到授权，但是访问是被禁止的。',
-    404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
-    406: '请求的格式不可得。',
-    410: '请求的资源被永久删除，且不会再得到的。',
-    422: '当创建一个对象时，发生一个验证错误。',
-    500: '服务器发生错误，请检查服务器。',
-    502: '网关错误。',
-    503: '服务不可用，服务器暂时过载或维护。',
-    504: '网关超时。',
-  };
-
-export function ajaxApi(url, option = {}) {
-
-    let params = {},
-
-        method = option.method || 'post',
-
-        data = option.data ;
-        
-
-
-    switch (method) {
-
-        case 'get':
-
-            url = url + (data ? '?' + formDataCode(data) : '');
-
-            break;
-
-        case 'post':
-
-            params.headers = {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8',
-                
-            };
-            params.method=method;
-
-            params.body = JSON.stringify(data);
-
-
-            break;
-
-        default:
-            
-
-            break;
-    }
-
-    return fetch(url, params).then(callback).catch(errHandle);
-
-}
-
-//创建修改参数格式的方法，改成提交的Form Data格式
-
-function formDataCode(data) {
-
-    let str = '';
-
-    for (let i in data) {
-
-        if (data.hasOwnProperty(i)) {
-            str = str + i + "=" + data[i] + '&';
+const _url = 'http://221.226.187.245:8888/wechatapi/home/test';
+/*
+*  get请求
+*  params:参数
+*  callback:回调函数
+* */
+export const get = (params, callback) => {
+    let url = _url;
+    if (params) {
+        let paramsArray = [];
+        //拼接参数
+        Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]));
+        if (url.search(/\?/) === -1) {
+            url += '?' + paramsArray.join('&');
+        } else {
+            url += '&' + paramsArray.join('&');
         }
-
     }
-
-    return str ? str.substring(0, str.length - 1) : '';
-
-}
-
-//创建fetch中then方法的回调
-
-function callback(res) {
-    if(res.status===200){
-        return res.json();
-    }
-    const errortext = codeMessage[res.status] || res.statusText;
-    const error = new Error(errortext);
-  error.name = res.status;
-  error.response = res;
-  throw error;
-
-}
-
-//创建容错方法
-
-function errHandle(e) {
-    if(e.name==404){
-        console.log(e)
-    }
-
-}
+    //fetch请求
+    fetch(url, {
+        method: 'GET',
+    }).then((response) => response.json())
+        .then((response) => {
+            //先解析是否有框架报错
+            callback(response);
+        })
+        .catch((error) => {
+            //请求异常，全局抛出
+        });
+};
+/*
+*  post请求
+*  params:参数,这里的参数格式是：{param1: 'value1',param2: 'value2'}
+*  callback:回调函数
+* */
+export const postJSON = (params, callback) => {
+    let url = _url;
+    //fetch请求
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params)
+    }).then((response) => response.json())
+        .then((responseJSON) => {
+            //解析框架结构
+            callback(responseJSON);
+        }).catch((error) => {
+            console.log('error = ' + error);
+        });
+};

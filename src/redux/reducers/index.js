@@ -1,10 +1,16 @@
 import { combineReducers } from 'redux'
 import { connectRouter } from 'connected-react-router'
-import reducer1 from './reducer1'
+
 //多个redeucer时，整合为一个rootReducer
+import getActionsAndReducers from '../../models/redux';
 
-
-export default (history) => combineReducers({
-  router: connectRouter(history),
-  reducer1
-})
+const { reducers } = getActionsAndReducers();
+console.log('combineReducers', reducers)
+export default (history) => {
+  let hs = connectRouter(history);
+  console.log('history', hs)
+  return combineReducers({
+    router: hs,
+    ...reducers
+  })
+}
