@@ -25,8 +25,6 @@ export default class AppRouter extends Component {
                     <Route path="/test" component={test} exact />
                     
 
-                    <Route component={NotFound1} />
-
                 </Switch>
             </div>
         );

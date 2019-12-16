@@ -11,7 +11,7 @@ import config from '../../config/hoc';
     fetch: true,
     connect(state) {
       return {
-        home_prop: state,
+        home_prop: state.home,
       };
     }
   })
@@ -25,9 +25,9 @@ class test extends Component {
         
     }
     componentDidMount(){
-        this.props.fetch.get(null, (res) => {
-            console.log(res);
-          })
+        this.props.fetch.get().then(res => {
+          console.log(res);
+        })
     }
     render() {
         const change=(e)=>{
@@ -37,9 +37,9 @@ class test extends Component {
             <div>
                 <input type='text' value={this.state.content} onChange={change.bind(this)}/>
                 <p>state的双向绑定：{this.state.content}</p> 
-                <Button type='primary' onClick={()=>{this.props.testClk(this.state.content)}}>点击测试(redux)</Button>
+                <Button type='primary' onClick={()=>{this.props.action.home.changeValue('chenyc')}}>点击测试(redux)</Button>
                 <p>reducer全局存储：{this.props.home_prop.value}</p> 
-                <input type="button" value='跳转' onClick={()=>{this.props.move()}}/>
+                <input type="button" value='跳转' onClick={()=>{this.props.action.system.go({ pathname: '/' })}}/>
             </div>
         )
     }

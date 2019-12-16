@@ -164,7 +164,7 @@ export default function getActionsAndReducers (models = _models) {
         //     }
         // }
         _actions[modelName] = actions;
-        console.log(modelName,' reducer init ',initialState);
+        //console.log(modelName,' reducer init ',initialState);
         _reducers[modelName] = handleActions(__reducers, initialState);
     });
     //console.log('sc actions',_actions);
